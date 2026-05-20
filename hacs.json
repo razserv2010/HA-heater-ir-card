@@ -1,0 +1,6 @@
+{
+  "name": "Heater IR Card",
+  "description": "כרטיס שליטה בתנור חימום דרך IR Blaster עם פסי LED ואנימציות מצב יום/לילה",
+  "render_readme": true,
+  "content_in_root": true
+}
