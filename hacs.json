@@ -1,6 +1,7 @@
 {
   "name": "Heater IR Card",
-  "description": "כרטיס שליטה בתנור חימום דרך IR Blaster עם פסי LED ואנימציות מצב יום/לילה",
-  "render_readme": true,
-  "content_in_root": true
+  "content_in_root": true,
+  "filename": "heater-ir-card.js",
+  "homeassistant": "2023.1.0",
+  "render_readme": true
 }
