@@ -25,6 +25,8 @@ class HeaterIrCard extends LitElement {
     }
     this.config = {
       name: "תנור חימום",
+      subtitle: "IR Blaster",
+      icon: "🔥",
       heater_switch: null,
       btn_1000w: null,
       btn_2000w: null,
@@ -42,12 +44,14 @@ class HeaterIrCard extends LitElement {
   static getStubConfig() {
     return {
       name: "תנור חימום",
-      heater_switch: "switch.ir_blaster_remote_תנור_חימום",
-      btn_1000w: "button.ir_blaster_remote_תנור_1000w",
-      btn_2000w: "button.ir_blaster_remote_תנור_2000w",
-      btn_3000w: "button.ir_blaster_remote_תנור_3000w",
-      btn_timer: "button.ir_blaster_remote_תנור_טיימר",
-      btn_sync: "button.ir_blaster_remote_תנור_סנכרון_מצב",
+      subtitle: "IR Blaster",
+      icon: "🔥",
+      heater_switch: "",
+      btn_1000w: "",
+      btn_2000w: "",
+      btn_3000w: "",
+      btn_timer: "",
+      btn_sync: "",
     };
   }
 
@@ -99,42 +103,41 @@ class HeaterIrCard extends LitElement {
         --border-radius: 18px;
       }
 
-      /* ── SPINNING BORDER WRAPPER ── */
       .card-outer {
         position: relative;
         padding: 3px;
         border-radius: var(--border-radius);
         overflow: hidden;
       }
-      .border-spin {
+
+      /* LED border — slow fade pulse, no shimmer/spin */
+      .border-glow {
         position: absolute;
         inset: 0;
         border-radius: var(--border-radius);
-        animation: spin 3s linear infinite;
       }
       .border-day {
-        background: conic-gradient(
-          from 0deg,
-          #ff4500 0%,
-          #ffaa00 25%,
-          #ff6500 50%,
-          #ffaa00 75%,
-          #ff4500 100%
-        );
+        box-shadow:
+          0 0 0 3px #ff6500,
+          0 0 12px 2px #ff6500aa;
+        animation: glow-day 2.5s ease-in-out infinite;
       }
       .border-night {
-        background: conic-gradient(
-          from 0deg,
-          #1e40af 0%,
-          #7c3aed 25%,
-          #1e40af 50%,
-          #a78bfa 75%,
-          #1e40af 100%
-        );
-        animation-duration: 4s;
+        box-shadow:
+          0 0 0 3px #7c3aed,
+          0 0 12px 2px #7c3aedaa;
+        animation: glow-night 3s ease-in-out infinite;
       }
 
-      /* ── INNER CARD ── */
+      @keyframes glow-day {
+        0%, 100% { box-shadow: 0 0 0 3px #ff6500, 0 0 10px 2px #ff6500aa; }
+        50%       { box-shadow: 0 0 0 3px #ffaa00, 0 0 18px 4px #ffaa00cc; }
+      }
+      @keyframes glow-night {
+        0%, 100% { box-shadow: 0 0 0 3px #7c3aed, 0 0 10px 2px #7c3aedaa; }
+        50%       { box-shadow: 0 0 0 3px #a78bfa, 0 0 18px 4px #a78bfacc; }
+      }
+
       .card-inner {
         position: relative;
         z-index: 1;
@@ -142,40 +145,37 @@ class HeaterIrCard extends LitElement {
         padding: 14px;
         overflow: hidden;
       }
-      .card-day { background: #ffffff; }
+      .card-day   { background: #ffffff; }
       .card-night { background: #1e1e2e; }
 
-      /* ── LED STRIP ── */
+      /* LED strip — gentle pulse only, no movement */
       .led-strip {
         height: 3px;
         border-radius: 2px;
-        background-size: 200% 100%;
-        animation: shimmer 1.5s linear infinite;
         margin-bottom: 12px;
+        animation: strip-pulse 2.5s ease-in-out infinite;
       }
-      .led-day {
-        background: linear-gradient(
-          90deg, #ff4500, #ffaa00, #ff6500, #ffaa00, #ff4500
-        );
-      }
-      .led-night {
-        background: linear-gradient(
-          90deg, #1e40af, #7c3aed, #a78bfa, #7c3aed, #1e40af
-        );
-        animation-duration: 2s;
+      .led-day   { background: #ff6500; }
+      .led-night { background: #7c3aed; animation-duration: 3s; }
+
+      @keyframes strip-pulse {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0.4; }
       }
 
-      /* ── STARS ── */
       .star {
         position: absolute;
-        width: 2px;
-        height: 2px;
+        width: 2px; height: 2px;
         background: white;
         border-radius: 50%;
         animation: twinkle 2s infinite;
       }
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.9; }
+        50%       { opacity: 0.1; }
+      }
 
-      /* ── HEADER ── */
+      /* HEADER */
       .header {
         display: flex;
         align-items: center;
@@ -183,24 +183,18 @@ class HeaterIrCard extends LitElement {
         margin-bottom: 12px;
       }
       .header-left { display: flex; align-items: center; gap: 8px; }
-      .fire-icon { font-size: 28px; line-height: 1; }
+      .card-icon   { font-size: 28px; line-height: 1; }
 
-      .title-day  { font-size: 15px; font-weight: 700; color: #1f2937; margin: 0; }
-      .title-night { font-size: 15px; font-weight: 700; color: #ffffff; margin: 0; }
-      .sub-day   { font-size: 11px; color: #6b7280; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
-      .sub-night { font-size: 11px; color: #94a3b8; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+      .title-day   { font-size: 15px; font-weight: 700; color: #1f2937; margin: 0; }
+      .title-night { font-size: 15px; font-weight: 700; color: #ffffff;  margin: 0; }
+      .sub-day     { font-size: 11px; color: #6b7280; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+      .sub-night   { font-size: 11px; color: #94a3b8; margin-top: 2px; display: flex; align-items: center; gap: 4px; }
 
-      .dot-on {
-        display: inline-block; width: 7px; height: 7px;
-        border-radius: 50%; background: #22c55e;
-        animation: pulse 1.2s infinite;
-      }
-      .dot-off {
-        display: inline-block; width: 7px; height: 7px;
-        border-radius: 50%; background: #9ca3af;
-      }
+      .dot-on  { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse 1.2s infinite; }
+      .dot-off { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #9ca3af; }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-      /* ── TOGGLE ── */
+      /* TOGGLE */
       .toggle {
         width: 44px; height: 25px;
         border-radius: 13px;
@@ -210,9 +204,9 @@ class HeaterIrCard extends LitElement {
         transition: background 0.25s;
         flex-shrink: 0;
       }
-      .toggle-on  { background: #ef4444; }
-      .toggle-off-day   { background: #e5e7eb; }
-      .toggle-off-night { background: #334155; }
+      .toggle-on         { background: #ef4444; }
+      .toggle-off-day    { background: #e5e7eb; }
+      .toggle-off-night  { background: #334155; }
       .knob {
         position: absolute;
         width: 19px; height: 19px;
@@ -224,17 +218,12 @@ class HeaterIrCard extends LitElement {
       .knob-on  { left: calc(100% - 22px); }
       .knob-off { left: 3px; }
 
-      /* ── HEAT BAR ── */
+      /* HEAT BAR */
       .heat-section { margin-bottom: 12px; }
-      .heat-meta {
-        font-size: 10px;
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 5px;
-      }
-      .heat-meta-day  { color: #6b7280; }
+      .heat-meta { font-size: 10px; display: flex; justify-content: space-between; margin-bottom: 5px; }
+      .heat-meta-day   { color: #6b7280; }
       .heat-meta-night { color: #94a3b8; }
-      .heat-bg-day  { height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
+      .heat-bg-day   { height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
       .heat-bg-night { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
       .heat-fill {
         height: 100%;
@@ -243,13 +232,9 @@ class HeaterIrCard extends LitElement {
         transition: width 0.4s ease;
       }
 
-      /* ── WATT BUTTONS GRID ── */
-      .section-label {
-        font-size: 10px; font-weight: 600;
-        letter-spacing: 0.03em;
-        margin-bottom: 6px;
-      }
-      .section-label-day  { color: #6b7280; }
+      /* WATT GRID */
+      .section-label       { font-size: 10px; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 6px; }
+      .section-label-day   { color: #6b7280; }
       .section-label-night { color: #94a3b8; }
 
       .watt-grid {
@@ -258,7 +243,6 @@ class HeaterIrCard extends LitElement {
         gap: 6px;
         margin-bottom: 8px;
       }
-
       .watt-btn {
         border-radius: 10px;
         padding: 8px 4px;
@@ -271,24 +255,24 @@ class HeaterIrCard extends LitElement {
       }
       .watt-btn:active { transform: scale(0.96); }
 
-      .watt-day         { background: #f9fafb; border: 1.5px solid #d1d5db; }
-      .watt-day.active  { background: #fff7ed; border-color: #f97316; }
-      .watt-night       { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2); }
+      .watt-day          { background: #f9fafb; border: 1.5px solid #d1d5db; }
+      .watt-day.active   { background: #fff7ed; border-color: #f97316; }
+      .watt-night        { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2); }
       .watt-night.active { background: rgba(249,115,22,0.2); border-color: #f97316; }
 
-      .wlabel { display: block; font-size: 11px; font-weight: 700; }
-      .wlabel-day        { color: #111827; }
-      .wlabel-day.active { color: #c2410c; }
+      .wlabel              { display: block; font-size: 11px; font-weight: 700; }
+      .wlabel-day          { color: #111827; }
+      .wlabel-day.active   { color: #c2410c; }
       .wlabel-night        { color: #ffffff; }
       .wlabel-night.active { color: #fb923c; }
 
-      .wsub { display: block; font-size: 9px; margin-top: 2px; }
-      .wsub-day        { color: #9ca3af; }
-      .wsub-day.active { color: #f97316; }
+      .wsub              { display: block; font-size: 9px; margin-top: 2px; }
+      .wsub-day          { color: #9ca3af; }
+      .wsub-day.active   { color: #f97316; }
       .wsub-night        { color: #94a3b8; }
       .wsub-night.active { color: #fdba74; }
 
-      /* ── BOTTOM BUTTONS ── */
+      /* BOTTOM BUTTONS */
       .bottom-row { display: flex; gap: 6px; }
       .bottom-btn {
         flex: 1;
@@ -303,27 +287,8 @@ class HeaterIrCard extends LitElement {
         transition: opacity 0.15s;
       }
       .bottom-btn:active { opacity: 0.7; }
-
       .bottom-day   { background: #f3f4f6; border: 1.5px solid #d1d5db; color: #374151; }
       .bottom-night { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.25); color: #ffffff; }
-
-      /* ── ANIMATIONS ── */
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to   { transform: rotate(360deg); }
-      }
-      @keyframes shimmer {
-        0%   { background-position: 0% 0; }
-        100% { background-position: 200% 0; }
-      }
-      @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50%       { opacity: 0.3; }
-      }
-      @keyframes twinkle {
-        0%, 100% { opacity: 0.9; }
-        50%       { opacity: 0.1; }
-      }
     `;
   }
 
@@ -334,7 +299,6 @@ class HeaterIrCard extends LitElement {
       <button
         class="watt-btn ${d ? "watt-day" : "watt-night"} ${isActive ? "active" : ""}"
         @click=${() => this._selectWatt(watt, entityKey)}
-        title="${label}"
       >
         <span class="wlabel ${d ? "wlabel-day" : "wlabel-night"} ${isActive ? "active" : ""}">
           ${icon} ${label}
@@ -350,44 +314,41 @@ class HeaterIrCard extends LitElement {
     if (!this.hass || !this.config) return html``;
 
     const dark = this._isDark;
-    const on = this._isOn;
-    const m = dark ? "night" : "day";
-
-    const stars = dark
-      ? html`
-          <div class="star" style="top:12%;left:75%;animation-delay:0s"></div>
-          <div class="star" style="top:35%;left:87%;animation-delay:0.8s"></div>
-          <div class="star" style="top:60%;left:80%;animation-delay:1.5s"></div>
-          <div class="star" style="top:22%;left:92%;animation-delay:0.4s"></div>
-        `
-      : html``;
+    const on   = this._isOn;
+    const m    = dark ? "night" : "day";
+    const icon = this.config.icon || "🔥";
+    const subtitle = this.config.subtitle || "IR Blaster";
 
     return html`
       <div class="card-outer">
-        <div class="border-spin ${dark ? "border-night" : "border-day"}"></div>
+        <div class="border-glow ${dark ? "border-night" : "border-day"}"></div>
 
         <div class="card-inner ${dark ? "card-night" : "card-day"}">
-          ${stars}
+
+          ${dark ? html`
+            <div class="star" style="top:12%;left:75%;animation-delay:0s"></div>
+            <div class="star" style="top:35%;left:87%;animation-delay:0.8s"></div>
+            <div class="star" style="top:60%;left:80%;animation-delay:1.5s"></div>
+            <div class="star" style="top:22%;left:92%;animation-delay:0.4s"></div>
+          ` : html``}
+
           <div class="led-strip ${dark ? "led-night" : "led-day"}"></div>
 
           <!-- HEADER -->
           <div class="header">
             <div class="header-left">
-              <div class="fire-icon">${on ? "🔥" : dark ? "🌙" : "🌡"}</div>
+              <div class="card-icon">${icon}</div>
               <div>
-                <div class="${dark ? "title-night" : "title-day"}">
-                  ${this.config.name}
-                </div>
+                <div class="${dark ? "title-night" : "title-day"}">${this.config.name}</div>
                 <div class="${dark ? "sub-night" : "sub-day"}">
                   <span class="${on ? "dot-on" : "dot-off"}"></span>
-                  IR Blaster · ${this._wattLabel}
+                  ${subtitle} · ${this._wattLabel}
                 </div>
               </div>
             </div>
             <button
               class="toggle ${on ? "toggle-on" : dark ? "toggle-off-night" : "toggle-off-day"}"
               @click=${this._callSwitch}
-              title="${on ? "כבה תנור" : "הפעל תנור"}"
             >
               <div class="knob ${on ? "knob-on" : "knob-off"}"></div>
             </button>
@@ -405,13 +366,11 @@ class HeaterIrCard extends LitElement {
           </div>
 
           <!-- WATT BUTTONS -->
-          <div class="section-label ${dark ? "section-label-night" : "section-label-day"}">
-            בחר עוצמה
-          </div>
+          <div class="section-label ${dark ? "section-label-night" : "section-label-day"}">בחר עוצמה</div>
           <div class="watt-grid">
-            ${this._renderWattBtn("1000W", "חימום נמוך",  "🌡", 1000, "btn_1000w", m)}
+            ${this._renderWattBtn("1000W", "חימום נמוך",   "🌡", 1000, "btn_1000w", m)}
             ${this._renderWattBtn("2000W", "חימום בינוני", "🔥", 2000, "btn_2000w", m)}
-            ${this._renderWattBtn("3000W", "חימום מלא",   "♨️", 3000, "btn_3000w", m)}
+            ${this._renderWattBtn("3000W", "חימום מלא",    "♨️", 3000, "btn_3000w", m)}
           </div>
 
           <!-- BOTTOM BUTTONS -->
@@ -419,14 +378,13 @@ class HeaterIrCard extends LitElement {
             <button
               class="bottom-btn ${dark ? "bottom-night" : "bottom-day"}"
               @click=${() => this._pressButton(this.config.btn_timer)}
-              title="טיימר"
             >⏱ טיימר</button>
             <button
               class="bottom-btn ${dark ? "bottom-night" : "bottom-day"}"
               @click=${() => this._pressButton(this.config.btn_sync)}
-              title="סנכרן מצב"
             >↺ סנכרן</button>
           </div>
+
         </div>
       </div>
     `;
@@ -435,11 +393,20 @@ class HeaterIrCard extends LitElement {
 
 // ─── EDITOR ───────────────────────────────────────────────────────────────────
 
+const ICON_OPTIONS = [
+  { value: "🔥", label: "🔥 אש" },
+  { value: "🌡", label: "🌡 תרמומטר" },
+  { value: "♨️", label: "♨️ קיטור" },
+  { value: "🏠", label: "🏠 בית" },
+  { value: "❄️", label: "❄️ קרח" },
+  { value: "⚡", label: "⚡ ברק" },
+];
+
 class HeaterIrCardEditor extends LitElement {
 
   static get properties() {
     return {
-      hass: { type: Object },
+      hass:   { type: Object },
       config: { type: Object },
     };
   }
@@ -450,7 +417,25 @@ class HeaterIrCardEditor extends LitElement {
 
   _schema() {
     return [
-      { name: "name", label: "שם הכרטיס", selector: { text: {} } },
+      {
+        name: "name",
+        label: "שם הכרטיס",
+        selector: { text: {} },
+      },
+      {
+        name: "subtitle",
+        label: "כיתוב משני (לדוג׳: IR Blaster / סלון)",
+        selector: { text: {} },
+      },
+      {
+        name: "icon",
+        label: "אייקון",
+        selector: {
+          select: {
+            options: ICON_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
+          },
+        },
+      },
       {
         name: "heater_switch",
         label: "מתג תנור (switch) — חובה",
@@ -485,9 +470,10 @@ class HeaterIrCardEditor extends LitElement {
   }
 
   _valueChanged(ev) {
-    const newConfig = ev.detail.value;
     this.dispatchEvent(
-      new CustomEvent("config-changed", { detail: { config: newConfig } })
+      new CustomEvent("config-changed", {
+        detail: { config: ev.detail.value },
+      })
     );
   }
 
